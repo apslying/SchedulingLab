@@ -1,4 +1,5 @@
 #to do- format decimals, print statment in two lines, fix printing after one process terminates
+#to do- fix verbose output for rr
 #important input-3 has more spaces in input file, tie break rule
 import random
 from Process import Process
@@ -45,7 +46,7 @@ def debug():
 
 
 def createProcesses():
-    file=open('input-4.txt', mode='r')
+    file=open('input-6.txt', mode='r')
     a=file.read()
     a = a.replace('    ', '   ')
     arr=a.split(sep='  ')
@@ -240,6 +241,67 @@ def runLcfs():
         #increment time
         globalTime+=1
 
+def runPsjf():
+    global globalTime
+
+    print('Running PSJF')
+    while not_all_processes_terminated():
+        verbose_output()
+        #print('')
+        #decrement running/blocked times
+        # increment waiting time
+        if readyArray:
+            increment_all_process_waiting_time()
+
+        if runningArray:
+            decrement_process_cpu_and_total_time()
+
+        if blockedArray:
+            for process in blockedArray:
+                update_process_io_time(process)
+
+        if runningArray and runningArray[0].totalTimeLeft == 0:
+            terminate_process()
+
+        if runningArray and runningArray[0].cpuTimeLeft==0:
+            move_process_from_running_to_blocked()
+
+        #create and terminate processes
+        create_processes_by_globalTime()
+
+        #move processes
+
+        if blockedArray:
+            for process in reversed(blockedArray):
+                if process.ioTimeLeft==0:
+                    move_process_from_blocked_to_preready(process)
+
+        if preReadyArray:
+            psjf_move_process_from_preready_to_ready()
+
+        #preempt
+        if runningArray:
+            for process in readyArray:
+                if process.totalTimeLeft<runningArray[0].totalTimeLeft:
+                    rr_preempt()
+                    break
+            psjf_move_process_from_preready_to_ready()
+
+        if not runningArray and readyArray:
+            fcfs_move_process_from_ready_to_running()
+
+
+        if not runningArray and not_all_processes_terminated():
+            global cpuUnused
+            cpuUnused+=1
+
+        if not blockedArray and not_all_processes_terminated():
+            global ioUnused
+            ioUnused+=1
+
+        #increment time
+        globalTime+=1
+
 
 
 def increment_all_process_waiting_time():
@@ -256,9 +318,11 @@ def update_process_io_time(process):
     process.ioTimeTotal+=1
 
 def fcfs_move_process_from_ready_to_running():
+
     if readyArray[0].cpuTimeLeft==0:
         readyArray[0].cpuTimeLeft=min(randomOS(readyArray[0].maxCpuBurst),readyArray[0].totalCpuTimeNeeded)
     readyArray[0].state=2
+    readyArray[0].quantum=0
     runningArray.append(readyArray[0])
     readyArray.pop(0)
 
@@ -289,6 +353,7 @@ def fcfs_move_process_from_preready_to_ready():
         process.state = 1
     readyArray.extend(preReadyArray)
     preReadyArray=[]
+
 
 def create_processes_by_globalTime():
     for process in processArray:
@@ -352,7 +417,8 @@ def verbose_output():
         elif process.state==1:
             string+='ready0'
         elif process.state==2:
-            string += 'running' + str(process.cpuTimeLeft)
+            #string += 'running' + str(process.cpuTimeLeft)
+            string += 'running' + str(2-process.quantum)
         elif process.state==3:
             string += 'blocked' + str(process.ioTimeLeft)
         elif process.state==4:
@@ -363,9 +429,9 @@ def verbose_output():
             string += 'error'
 
     string+='.'
-    #print(globalTime, string)
-    if string!=textArray[globalTime].replace(' ',''):
-        print(globalTime)
+    # print(globalTime, string)
+    # if string!=textArray[globalTime].replace(' ',''):
+    #     print(globalTime)
 
 def lcfs_move_process_from_preready_to_ready():
     global preReadyArray
@@ -394,9 +460,17 @@ def lcfs_move_process_from_ready_to_running():
 
 def rr_preempt():
     runningArray[0].state = -1
-    runningArray[0].quantum = 0
     preReadyArray.append(runningArray[0])
     runningArray.pop(0)
+
+def psjf_move_process_from_preready_to_ready():
+    global readyArray
+    global preReadyArray
+    preReadyArray.extend(readyArray)
+    for process in preReadyArray:
+        process.state = 1
+    readyArray=sorted(preReadyArray, key=lambda process: process.totalTimeLeft)
+    preReadyArray=[]
 
 
 
@@ -416,10 +490,15 @@ debug()
 # print_summary_data()
 # globals_to_default_values()
 
+# readRandom()
+# processArray = createProcesses()
+# runRr()
+# print_summary_data()
+# globals_to_default_values()
+
 readRandom()
 processArray = createProcesses()
-runRr()
+runPsjf()
 print_summary_data()
 globals_to_default_values()
-
 
