@@ -1,7 +1,8 @@
 #to do- format decimals, print statment in two lines, fix printing after one process terminates
 #to do- fix verbose output for rr
-#important input-3 has more spaces in input file, tie break rule
 import random
+import sys
+import getopt
 from Process import Process
 textArray=[]
 randomArray=[]
@@ -14,6 +15,7 @@ numOfTerminatedProcesses=0
 finalFinishingTime=0
 cpuUnused=0
 ioUnused=0
+verbose=False
 
 def globals_to_default_values():
     global preReadyArray
@@ -25,6 +27,7 @@ def globals_to_default_values():
     global finalFinishingTime
     global cpuUnused
     global ioUnused
+    global verbose
 
     preReadyArray = []
     readyArray = []
@@ -35,10 +38,10 @@ def globals_to_default_values():
     finalFinishingTime = 0
     cpuUnused = 0
     ioUnused = 0
-
+    verbose = False
 
 def debug():
-    file = open('rr-output-4-detailed.txt', mode='r')
+    file = open('psjf-output-4-detailed.txt', mode='r')
     text = file.read()
     global textArray
     textArray = text.split(sep='\n')
@@ -46,7 +49,11 @@ def debug():
 
 
 def createProcesses():
-    file=open('input-6.txt', mode='r')
+    options, remainder=getopt.getopt(sys.argv[1:], '', 'verbose')
+    if options!=[] and options[0][0]=='--verbose':
+        global verbose
+        verbose=True
+    file=open(remainder[0], mode='r')
     a=file.read()
     a = a.replace('    ', '   ')
     arr=a.split(sep='  ')
@@ -78,10 +85,12 @@ def randomOS(u):
 
 def runFcfs():
     global globalTime
+    global verbose
 
-    print('Running FCFS')
+    print('The scheduling algorithm used was First Come First Served')
     while not_all_processes_terminated():
-        verbose_output()
+        if verbose==True:
+            verbose_output()
         #print('')
         #decrement running/blocked times
         # increment waiting time
@@ -131,10 +140,12 @@ def runFcfs():
 
 def runRr():
     global globalTime
+    global verbose
 
-    print('Running RR')
+    print('The scheduling algorithm used was Round Robin, with quantum=2')
     while not_all_processes_terminated():
-        verbose_output()
+        if verbose==True:
+            verbose_output()
         #print('')
         #decrement running/blocked times
         # increment waiting time
@@ -190,10 +201,12 @@ def runRr():
 
 def runLcfs():
     global globalTime
+    global verbose
 
-    print('Running LCFS')
+    print('The scheduling algorithm used was Last Come First Served')
     while not_all_processes_terminated():
-        verbose_output()
+        if verbose==True:
+            verbose_output()
         #print('')
         #decrement running/blocked times
         # increment waiting time
@@ -243,10 +256,12 @@ def runLcfs():
 
 def runPsjf():
     global globalTime
+    global verbose
 
-    print('Running PSJF')
+    print('The scheduling algorithm used was Preemptive Shortest Job First')
     while not_all_processes_terminated():
-        verbose_output()
+        if verbose==True:
+            verbose_output()
         #print('')
         #decrement running/blocked times
         # increment waiting time
@@ -367,7 +382,6 @@ def terminate_process():
     global finalFinishingTime
     finalFinishingTime = runningArray[0].finishingTime
     runningArray[0].turnaroundTime=runningArray[0].finishingTime-runningArray[0].arrivalTime
-    process_output_summary()
     runningArray.pop(0)
     global numOfTerminatedProcesses
     numOfTerminatedProcesses+=1
@@ -381,21 +395,24 @@ def not_all_processes_terminated():
         return True
 
 def process_output_summary():
-    print('Process ', processArray.index(runningArray[0]) ,':', sep='')
-    print('\t\t(A,B,C,IO) = (',runningArray[0].arrivalTime, ',' ,runningArray[0].maxCpuBurst,',' , runningArray[0].totalCpuTimeNeeded,',' , runningArray[0].maxIoBurst, ')', sep='')
-    print('\t\tFinishing time:', runningArray[0].finishingTime)
-    print('\t\tTurnaround time:', runningArray[0].turnaroundTime)
-    print('\t\tI/O time:', runningArray[0].ioTimeTotal)
-    print('\t\tWaiting time:', runningArray[0].waitingTime)
+    for process in processArray:
+        print('Process ', processArray.index(process), ':', sep='')
+        print('\t\t(A,B,C,IO) = (', process.arrivalTime, ',', process.maxCpuBurst, ',', process.totalCpuTimeNeeded, ',',
+              process.maxIoBurst, ')', sep='')
+        print('\t\tFinishing time:', process.finishingTime)
+        print('\t\tTurnaround time:', process.turnaroundTime)
+        print('\t\tI/O time:', process.ioTimeTotal)
+        print('\t\tWaiting time:', process.waitingTime)
 
 def print_summary_data():
     print('Summary Data:')
     print('\t\tFinishing time:', finalFinishingTime)
-    print('\t\tCPU Utilization:', (finalFinishingTime-cpuUnused)/finalFinishingTime)
-    print('\t\tI/O Utilization:', (finalFinishingTime-ioUnused)/finalFinishingTime)
-    print('\t\tThroughput:', (len(processArray)/finalFinishingTime) * 100 ,'processes per hundred cycles')
-    print('\t\tAverage turnaround time:', average_turnaround())
-    print('\t\tAverage waiting time:', average_waiting())
+    print('\t\tCPU Utilization:', '{:f}'.format((finalFinishingTime-cpuUnused)/finalFinishingTime))
+    print('\t\tI/O Utilization:', '{:f}'.format((finalFinishingTime-ioUnused)/finalFinishingTime))
+    print('\t\tThroughput:', '{:f}'.format((len(processArray)/finalFinishingTime) * 100) ,'processes per hundred cycles')
+    print('\t\tAverage turnaround time:', '{:f}'.format(average_turnaround()))
+    print('\t\tAverage waiting time:', '{:f}'.format(average_waiting()))
+    print('\n\n\n')
 
 def average_turnaround():
     sum=0
@@ -410,26 +427,26 @@ def average_waiting():
     return sum/len(processArray)
 
 def verbose_output():
-    string = 'Beforecycle' + str(globalTime) + ':'
+    string = 'Before cycle ' + str(globalTime) + ':'
     for process in processArray:
         if process.state==0:
-            string+='unstarted0'
+            string+=' unstarted 0'
         elif process.state==1:
-            string+='ready0'
+            string+=' ready ' + str(process.cpuTimeLeft)
         elif process.state==2:
-            #string += 'running' + str(process.cpuTimeLeft)
-            string += 'running' + str(2-process.quantum)
+            string += ' running ' + str(process.cpuTimeLeft)
+            #string += 'running' + str(2-process.quantum)
         elif process.state==3:
-            string += 'blocked' + str(process.ioTimeLeft)
+            string += ' blocked ' + str(process.ioTimeLeft)
         elif process.state==4:
-            string += 'terminated0'
+            string += ' terminated 0'
         elif process.state == -1:
             string += 'preready'
         else:
             string += 'error'
 
     string+='.'
-    # print(globalTime, string)
+    print(string)
     # if string!=textArray[globalTime].replace(' ',''):
     #     print(globalTime)
 
@@ -478,27 +495,32 @@ def psjf_move_process_from_preready_to_ready():
 #running the code
 debug()
 
-# readRandom()
-# processArray = createProcesses()
-# runFcfs()
-# print_summary_data()
-# globals_to_default_values()
-#
-# readRandom()
-# processArray = createProcesses()
-# runLcfs()
-# print_summary_data()
-# globals_to_default_values()
+readRandom()
+processArray = createProcesses()
+runFcfs()
+process_output_summary()
+print_summary_data()
+globals_to_default_values()
 
-# readRandom()
-# processArray = createProcesses()
-# runRr()
-# print_summary_data()
-# globals_to_default_values()
+readRandom()
+processArray = createProcesses()
+runRr()
+process_output_summary()
+print_summary_data()
+globals_to_default_values()
+
+readRandom()
+processArray = createProcesses()
+runLcfs()
+process_output_summary()
+print_summary_data()
+globals_to_default_values()
 
 readRandom()
 processArray = createProcesses()
 runPsjf()
+process_output_summary()
 print_summary_data()
 globals_to_default_values()
+print('End.')
 
