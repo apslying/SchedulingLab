@@ -44,7 +44,7 @@ def debug():
     file = open('psjf-output-4-detailed.txt', mode='r')
     text = file.read()
     global textArray
-    textArray = text.split(sep='\n')
+    textArray = text.split('\n')
     #print(textArray[0].replace(' ',''))
 
 
@@ -56,11 +56,11 @@ def createProcesses():
     file=open(remainder[0], mode='r')
     a=file.read()
     a = a.replace('    ', '   ')
-    arr=a.split(sep='  ')
+    arr=a.split('  ')
     processArr=[]
     for i in range(1,int(arr[0])+1):
         arr[i]=arr[i].lstrip()
-        tempArr=arr[i].split(sep=' ')
+        tempArr=arr[i].split(' ')
         #print(tempArr)
         obj=Process(int(tempArr[0]),int(tempArr[1]),int(tempArr[2]),int(tempArr[3]))
         processArr.append(obj)
@@ -73,7 +73,7 @@ def readRandom():
     global randomArray
     file = open('random-numbers.txt', mode='r')
     text=file.read()
-    randomArray=text.split(sep='\n')
+    randomArray=text.split('\n')
     randomArray.pop(-1) #removes the \n char at end of array
 
 
@@ -87,7 +87,7 @@ def runFcfs():
     global globalTime
     global verbose
 
-    print('The scheduling algorithm used was First Come First Served')
+    print 'The scheduling algorithm used was First Come First Served'
     while not_all_processes_terminated():
         if verbose==True:
             verbose_output()
@@ -142,7 +142,7 @@ def runRr():
     global globalTime
     global verbose
 
-    print('The scheduling algorithm used was Round Robin, with quantum=2')
+    print 'The scheduling algorithm used was Round Robin, with quantum=2'
     while not_all_processes_terminated():
         if verbose==True:
             verbose_output()
@@ -203,7 +203,7 @@ def runLcfs():
     global globalTime
     global verbose
 
-    print('The scheduling algorithm used was Last Come First Served')
+    print 'The scheduling algorithm used was Last Come First Served'
     while not_all_processes_terminated():
         if verbose==True:
             verbose_output()
@@ -258,7 +258,7 @@ def runPsjf():
     global globalTime
     global verbose
 
-    print('The scheduling algorithm used was Preemptive Shortest Job First')
+    print 'The scheduling algorithm used was Preemptive Shortest Job First'
     while not_all_processes_terminated():
         if verbose==True:
             verbose_output()
@@ -396,9 +396,9 @@ def not_all_processes_terminated():
 
 def process_output_summary():
     for process in processArray:
-        print('Process ', processArray.index(process), ':', sep='')
+        print 'Process ', processArray.index(process), ':'
         print('\t\t(A,B,C,IO) = (', process.arrivalTime, ',', process.maxCpuBurst, ',', process.totalCpuTimeNeeded, ',',
-              process.maxIoBurst, ')', sep='')
+              process.maxIoBurst, ')')
         print('\t\tFinishing time:', process.finishingTime)
         print('\t\tTurnaround time:', process.turnaroundTime)
         print('\t\tI/O time:', process.ioTimeTotal)
