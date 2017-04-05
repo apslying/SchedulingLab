@@ -3,7 +3,6 @@
 import random
 from Process import Process
 textArray=[]
-
 randomArray=[]
 preReadyArray=[]
 readyArray=[]
@@ -15,8 +14,30 @@ finalFinishingTime=0
 cpuUnused=0
 ioUnused=0
 
+def globals_to_default_values():
+    global preReadyArray
+    global readyArray
+    global runningArray
+    global blockedArray
+    global globalTime
+    global numOfTerminatedProcesses
+    global finalFinishingTime
+    global cpuUnused
+    global ioUnused
+
+    preReadyArray = []
+    readyArray = []
+    runningArray = []
+    blockedArray = []
+    globalTime = 0
+    numOfTerminatedProcesses = 0
+    finalFinishingTime = 0
+    cpuUnused = 0
+    ioUnused = 0
+
+
 def debug():
-    file = open('fcfs-output-4-detailed.txt', mode='r')
+    file = open('rr-output-4-detailed.txt', mode='r')
     text = file.read()
     global textArray
     textArray = text.split(sep='\n')
@@ -24,8 +45,9 @@ def debug():
 
 
 def createProcesses():
-    file=open('input-7.txt', mode='r')
+    file=open('input-4.txt', mode='r')
     a=file.read()
+    a = a.replace('    ', '   ')
     arr=a.split(sep='  ')
     processArr=[]
     for i in range(1,int(arr[0])+1):
@@ -53,9 +75,10 @@ def randomOS(u):
     randomArray.pop(0)
     return 1+(int(num)%u)
 
-def runProcesses():
+def runFcfs():
     global globalTime
 
+    print('Running FCFS')
     while not_all_processes_terminated():
         verbose_output()
         #print('')
@@ -88,10 +111,68 @@ def runProcesses():
                     move_process_from_blocked_to_preready(process)
 
         if preReadyArray:
-            move_process_from_preready_to_ready()
+            fcfs_move_process_from_preready_to_ready()
 
         if not runningArray and readyArray:
-            move_process_from_ready_to_running()
+            fcfs_move_process_from_ready_to_running()
+
+
+        if not runningArray and not_all_processes_terminated():
+            global cpuUnused
+            cpuUnused+=1
+
+        if not blockedArray and not_all_processes_terminated():
+            global ioUnused
+            ioUnused+=1
+
+        #increment time
+        globalTime+=1
+
+def runRr():
+    global globalTime
+
+    print('Running RR')
+    while not_all_processes_terminated():
+        verbose_output()
+        #print('')
+        #decrement running/blocked times
+        # increment waiting time
+        if readyArray:
+            increment_all_process_waiting_time()
+
+        if runningArray:
+            decrement_process_cpu_and_total_time()
+
+        if blockedArray:
+            for process in blockedArray:
+                update_process_io_time(process)
+
+        if runningArray and runningArray[0].totalTimeLeft == 0:
+            terminate_process()
+
+        if runningArray and runningArray[0].cpuTimeLeft==0:
+            move_process_from_running_to_blocked()
+
+        #create and terminate processes
+        create_processes_by_globalTime()
+
+        #move processes
+
+        if blockedArray:
+            for process in reversed(blockedArray):
+                if process.ioTimeLeft==0:
+                    move_process_from_blocked_to_preready(process)
+
+        # preempt
+        if runningArray:
+            if runningArray[0].quantum == 2:
+                rr_preempt()
+
+        if preReadyArray:
+            fcfs_move_process_from_preready_to_ready()
+
+        if not runningArray and readyArray:
+            fcfs_move_process_from_ready_to_running()
 
 
         if not runningArray and not_all_processes_terminated():
@@ -106,6 +187,61 @@ def runProcesses():
         globalTime+=1
 
 
+def runLcfs():
+    global globalTime
+
+    print('Running LCFS')
+    while not_all_processes_terminated():
+        verbose_output()
+        #print('')
+        #decrement running/blocked times
+        # increment waiting time
+        if readyArray:
+            increment_all_process_waiting_time()
+
+        if runningArray:
+            decrement_process_cpu_and_total_time()
+
+        if blockedArray:
+            for process in blockedArray:
+                update_process_io_time(process)
+
+        if runningArray and runningArray[0].totalTimeLeft == 0:
+            terminate_process()
+
+        if runningArray and runningArray[0].cpuTimeLeft==0:
+            move_process_from_running_to_blocked()
+
+        #create and terminate processes
+        create_processes_by_globalTime()
+
+        #move processes
+
+        if blockedArray:
+            for process in reversed(blockedArray):
+                if process.ioTimeLeft==0:
+                    move_process_from_blocked_to_preready(process)
+
+        if preReadyArray:
+            lcfs_move_process_from_preready_to_ready()
+
+        if not runningArray and readyArray:
+            lcfs_move_process_from_ready_to_running()
+
+
+        if not runningArray and not_all_processes_terminated():
+            global cpuUnused
+            cpuUnused+=1
+
+        if not blockedArray and not_all_processes_terminated():
+            global ioUnused
+            ioUnused+=1
+
+        #increment time
+        globalTime+=1
+
+
+
 def increment_all_process_waiting_time():
     for process in readyArray:
         process.waitingTime+=1
@@ -113,13 +249,15 @@ def increment_all_process_waiting_time():
 def decrement_process_cpu_and_total_time():
     runningArray[0].cpuTimeLeft-=1
     runningArray[0].totalTimeLeft-=1
+    runningArray[0].quantum+=1
 
 def update_process_io_time(process):
     process.ioTimeLeft-=1
     process.ioTimeTotal+=1
 
-def move_process_from_ready_to_running():
-    readyArray[0].cpuTimeLeft=min(randomOS(readyArray[0].maxCpuBurst),readyArray[0].totalCpuTimeNeeded)
+def fcfs_move_process_from_ready_to_running():
+    if readyArray[0].cpuTimeLeft==0:
+        readyArray[0].cpuTimeLeft=min(randomOS(readyArray[0].maxCpuBurst),readyArray[0].totalCpuTimeNeeded)
     readyArray[0].state=2
     runningArray.append(readyArray[0])
     readyArray.pop(0)
@@ -135,14 +273,12 @@ def move_process_from_blocked_to_preready(process):
     preReadyArray.append(process)
     blockedArray.pop(blockedArray.index(process))
 
-def move_process_from_preready_to_ready():
+def fcfs_move_process_from_preready_to_ready():
     global preReadyArray
     tempPreReady=[]
     while preReadyArray:
-        print(preReadyArray)
         chosenProcess=preReadyArray[0]
         for i in range(1,len(preReadyArray)):
-            print('here')
             if preReadyArray[i].arrivalTime<chosenProcess.arrivalTime or preReadyArray[i].arrivalTime==chosenProcess.arrivalTime and processArray.index(preReadyArray[i])<processArray.index(chosenProcess):
                 chosenProcess=preReadyArray[i]
         tempPreReady.append(chosenProcess)
@@ -227,18 +363,63 @@ def verbose_output():
             string += 'error'
 
     string+='.'
-    print(globalTime, string)
+    #print(globalTime, string)
     if string!=textArray[globalTime].replace(' ',''):
         print(globalTime)
+
+def lcfs_move_process_from_preready_to_ready():
+    global preReadyArray
+    tempPreReady = []
+    while preReadyArray:
+        chosenProcess = preReadyArray[0]
+        for i in range(1, len(preReadyArray)):
+            if preReadyArray[i].arrivalTime < chosenProcess.arrivalTime or preReadyArray[
+                i].arrivalTime == chosenProcess.arrivalTime and processArray.index(
+                    preReadyArray[i]) < processArray.index(chosenProcess):
+                chosenProcess = preReadyArray[i]
+        tempPreReady.insert(0,chosenProcess)
+        preReadyArray.remove(chosenProcess)
+
+    preReadyArray = tempPreReady
+    for process in preReadyArray:
+        process.state = 1
+    readyArray.extend(preReadyArray)
+    preReadyArray = []
+
+def lcfs_move_process_from_ready_to_running():
+    readyArray[-1].cpuTimeLeft=min(randomOS(readyArray[-1].maxCpuBurst),readyArray[-1].totalCpuTimeNeeded)
+    readyArray[-1].state=2
+    runningArray.append(readyArray[-1])
+    readyArray.pop(-1)
+
+def rr_preempt():
+    runningArray[0].state = -1
+    runningArray[0].quantum = 0
+    preReadyArray.append(runningArray[0])
+    runningArray.pop(0)
+
 
 
 
 #running the code
 debug()
 
+# readRandom()
+# processArray = createProcesses()
+# runFcfs()
+# print_summary_data()
+# globals_to_default_values()
+#
+# readRandom()
+# processArray = createProcesses()
+# runLcfs()
+# print_summary_data()
+# globals_to_default_values()
+
 readRandom()
 processArray = createProcesses()
-
-runProcesses()
+runRr()
 print_summary_data()
+globals_to_default_values()
+
 

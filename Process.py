@@ -1,4 +1,5 @@
 class Process:
+    quantum=0
     state=0
     cpuTimeLeft=0
     ioTimeLeft=0
@@ -28,5 +29,12 @@ print(a)
 
 b=4
 
-if b==-4 or b>0 and b<10:
-    print('good')
+
+# file=open('input-7.txt', mode='r')
+# a=file.read()
+# print(a)
+# a=a.replace('    ','   ')
+# print(a)
+#
+# arr=a.split(sep='  ')
+# print(arr)
