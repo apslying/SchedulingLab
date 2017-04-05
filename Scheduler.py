@@ -24,7 +24,7 @@ def debug():
 
 
 def createProcesses():
-    file=open('input-4.txt', mode='r')
+    file=open('input-7.txt', mode='r')
     a=file.read()
     arr=a.split(sep='  ')
     processArr=[]
@@ -137,7 +137,18 @@ def move_process_from_blocked_to_preready(process):
 
 def move_process_from_preready_to_ready():
     global preReadyArray
-    preReadyArray=sorted(preReadyArray, key=lambda process: process.arrivalTime)
+    tempPreReady=[]
+    while preReadyArray:
+        print(preReadyArray)
+        chosenProcess=preReadyArray[0]
+        for i in range(1,len(preReadyArray)):
+            print('here')
+            if preReadyArray[i].arrivalTime<chosenProcess.arrivalTime or preReadyArray[i].arrivalTime==chosenProcess.arrivalTime and processArray.index(preReadyArray[i])<processArray.index(chosenProcess):
+                chosenProcess=preReadyArray[i]
+        tempPreReady.append(chosenProcess)
+        preReadyArray.remove(chosenProcess)
+
+    preReadyArray=tempPreReady
     for process in preReadyArray:
         process.state = 1
     readyArray.extend(preReadyArray)
@@ -219,13 +230,6 @@ def verbose_output():
     print(globalTime, string)
     if string!=textArray[globalTime].replace(' ',''):
         print(globalTime)
-
-
-
-
-
-
-
 
 
 

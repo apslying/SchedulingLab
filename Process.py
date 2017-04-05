@@ -15,6 +15,7 @@ class Process:
 #
 a=[10,20,30,40,50]
 a.extend([60,70])
+a.remove(60)
 print(a)
 # for num in reversed(a):
 #     print(a,num)
@@ -24,3 +25,8 @@ print(a)
 # for i in range(0,len(a)):
 #     if a[i]==20:
 #         a.pop(i)
+
+b=4
+
+if b==-4 or b>0 and b<10:
+    print('good')
