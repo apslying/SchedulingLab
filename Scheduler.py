@@ -397,34 +397,33 @@ def not_all_processes_terminated():
 def process_output_summary():
     for process in processArray:
         print 'Process ', processArray.index(process), ':'
-        print('\t\t(A,B,C,IO) = (', process.arrivalTime, ',', process.maxCpuBurst, ',', process.totalCpuTimeNeeded, ',',
-              process.maxIoBurst, ')')
-        print('\t\tFinishing time:', process.finishingTime)
-        print('\t\tTurnaround time:', process.turnaroundTime)
-        print('\t\tI/O time:', process.ioTimeTotal)
-        print('\t\tWaiting time:', process.waitingTime)
+        print '\t\t(A,B,C,IO) = (', process.arrivalTime, ',', process.maxCpuBurst, ',', process.totalCpuTimeNeeded, ',', process.maxIoBurst, ')'
+        print '\t\tFinishing time:', process.finishingTime
+        print '\t\tTurnaround time:', process.turnaroundTime
+        print '\t\tI/O time:', process.ioTimeTotal
+        print '\t\tWaiting time:', process.waitingTime
 
 def print_summary_data():
-    print('Summary Data:')
-    print('\t\tFinishing time:', finalFinishingTime)
-    print('\t\tCPU Utilization:', '{:f}'.format((finalFinishingTime-cpuUnused)/finalFinishingTime))
-    print('\t\tI/O Utilization:', '{:f}'.format((finalFinishingTime-ioUnused)/finalFinishingTime))
-    print('\t\tThroughput:', '{:f}'.format((len(processArray)/finalFinishingTime) * 100) ,'processes per hundred cycles')
-    print('\t\tAverage turnaround time:', '{:f}'.format(average_turnaround()))
-    print('\t\tAverage waiting time:', '{:f}'.format(average_waiting()))
-    print('\n\n\n')
+    print 'Summary Data:'
+    print '\t\tFinishing time:', finalFinishingTime
+    print '\t\tCPU Utilization:', '%f' % ((finalFinishingTime-cpuUnused)/float(finalFinishingTime))
+    print '\t\tI/O Utilization:', '%f' % ((finalFinishingTime-ioUnused)/float(finalFinishingTime))
+    print '\t\tThroughput:', '%f' % ((len(processArray)/float(finalFinishingTime)) * 100) ,'processes per hundred cycles'
+    print '\t\tAverage turnaround time:', '%f' % (average_turnaround())
+    print '\t\tAverage waiting time:', '%f' % (average_waiting())
+    print '\n\n\n'
 
 def average_turnaround():
     sum=0
     for process in processArray:
         sum+=process.turnaroundTime
-    return sum/len(processArray)
+    return sum/float(len(processArray))
 
 def average_waiting():
     sum=0
     for process in processArray:
         sum+=process.waitingTime
-    return sum/len(processArray)
+    return sum/float(len(processArray))
 
 def verbose_output():
     string = 'Before cycle ' + str(globalTime) + ':'
