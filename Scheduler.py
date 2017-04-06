@@ -40,12 +40,12 @@ def globals_to_default_values():
     ioUnused = 0
     verbose = False
 
-def debug():
-    file = open('psjf-output-4-detailed.txt', mode='r')
-    text = file.read()
-    global textArray
-    textArray = text.split('\n')
-    #print(textArray[0].replace(' ',''))
+# def debug():
+#     file = open('psjf-output-4-detailed.txt', mode='r')
+#     text = file.read()
+#     global textArray
+#     textArray = text.split('\n')
+#     #print(textArray[0].replace(' ',''))
 
 
 def createProcesses():
@@ -492,7 +492,7 @@ def psjf_move_process_from_preready_to_ready():
 
 
 #running the code
-debug()
+# debug()
 
 readRandom()
 processArray = createProcesses()

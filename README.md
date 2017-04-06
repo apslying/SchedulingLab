@@ -1,9 +1,12 @@
 # SchedulingLab
 Simulation of an OS process scheduler 
 
-There are two .py files, Scheduler.py and Process.py. 
-*Process.py simply defines a class called "process".
-*Scheduler.py is the program
+There are two .py files (Scheduler.py and Process.py), and one text file (random-numbers.txt) 
+
+Process.py simply defines a class called "process".
+Scheduler.py is the program
+random-numbers.txt is a list of random numbers 
+
 
 To run program, type:
 python3 Scheduler.py <input-filename> 

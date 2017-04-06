@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e55d5497-89ba-4f3d-a22a-6387c80285b4" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Process.py" afterPath="$PROJECT_DIR$/Process.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Scheduler.py" afterPath="$PROJECT_DIR$/Scheduler.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -20,8 +22,8 @@
       <file leaf-file-name="Scheduler.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Scheduler.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="249">
-              <caret line="410" column="81" lean-forward="false" selection-start-line="410" selection-start-column="81" selection-end-line="410" selection-end-column="81" />
+            <state relative-caret-position="189">
+              <caret line="494" column="0" lean-forward="false" selection-start-line="494" selection-start-column="2" selection-end-line="494" selection-end-column="9" />
               <folding>
                 <element signature="e#130#143#0" expanded="true" />
               </folding>
@@ -32,10 +34,10 @@
       <file leaf-file-name="Process.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Process.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="570">
-              <caret line="38" column="23" lean-forward="true" selection-start-line="38" selection-start-column="23" selection-end-line="38" selection-end-column="23" />
+            <state relative-caret-position="315">
+              <caret line="21" column="0" lean-forward="true" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
               <folding>
-                <marker date="1491431146000" expanded="true" signature="660:802" ph="..." />
+                <marker date="1491437217000" expanded="true" signature="604:746" ph="..." />
               </folding>
             </state>
           </provider>
@@ -380,7 +382,7 @@
         <state relative-caret-position="15">
           <caret line="1" column="10" lean-forward="false" selection-start-line="1" selection-start-column="10" selection-end-line="1" selection-end-column="10" />
           <folding>
-            <marker date="1491431146000" expanded="true" signature="660:802" ph="..." />
+            <marker date="1491437217000" expanded="true" signature="604:746" ph="..." />
           </folding>
         </state>
       </provider>
@@ -431,7 +433,7 @@
         <state relative-caret-position="15">
           <caret line="1" column="0" lean-forward="false" selection-start-line="1" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
           <folding>
-            <marker date="1491431146000" expanded="true" signature="660:802" ph="..." />
+            <marker date="1491437217000" expanded="true" signature="604:746" ph="..." />
           </folding>
         </state>
       </provider>
@@ -456,7 +458,7 @@
         <state relative-caret-position="45">
           <caret line="3" column="0" lean-forward="true" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
           <folding>
-            <marker date="1491431146000" expanded="true" signature="660:802" ph="..." />
+            <marker date="1491437217000" expanded="true" signature="604:746" ph="..." />
           </folding>
         </state>
       </provider>
@@ -642,18 +644,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Process.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="570">
-          <caret line="38" column="23" lean-forward="true" selection-start-line="38" selection-start-column="23" selection-end-line="38" selection-end-column="23" />
+        <state relative-caret-position="315">
+          <caret line="21" column="0" lean-forward="true" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
           <folding>
-            <marker date="1491431146000" expanded="true" signature="660:802" ph="..." />
+            <marker date="1491437217000" expanded="true" signature="604:746" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Scheduler.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="249">
-          <caret line="410" column="81" lean-forward="false" selection-start-line="410" selection-start-column="81" selection-end-line="410" selection-end-column="81" />
+        <state relative-caret-position="189">
+          <caret line="494" column="0" lean-forward="false" selection-start-line="494" selection-start-column="2" selection-end-line="494" selection-end-column="9" />
           <folding>
             <element signature="e#130#143#0" expanded="true" />
           </folding>

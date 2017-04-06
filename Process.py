@@ -14,10 +14,7 @@ class Process:
         self.maxIoBurst=maxIoBurst
         self.totalTimeLeft=totalCpuTimeNeeded
 #
-a=[10,20,30,40,50]
-a.extend([60,70])
-a.remove(60)
-#
+
 # for num in reversed(a):
 #     print(a,num)
 #     if num==20:
@@ -26,8 +23,6 @@ a.remove(60)
 # for i in range(0,len(a)):
 #     if a[i]==20:
 #         a.pop(i)
-
-b=4
 
 
 # file=open('input-7.txt', mode='r')
@@ -38,5 +33,3 @@ b=4
 #
 # arr=a.split(sep='  ')
 # print(arr)
-
-print('{:f}'.format(3.1415926535))
